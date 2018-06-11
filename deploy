@@ -11,7 +11,7 @@ else
 fi
 
 output_template_file=$(mktemp)
-stackName="AWSPics"
+stackName="AWSPics2"
 
 for function in login resize site-builder; do
   (

@@ -1,8 +1,8 @@
 // Note: no need to bundle <aws-sdk>, it's provided by Lambda
-const AWS = require('aws-sdk')
-const async = require('async')
-const htpasswd = require('htpasswd-auth')
-const cloudfront = require('aws-cloudfront-sign')
+const AWS = require('aws-sdk');
+const async = require('async');
+const htpasswd = require('htpasswd-auth');
+const cloudfront = require('aws-cloudfront-sign');
 
 // --------------
 // Lambda function parameters, as environment variables
@@ -14,7 +14,7 @@ const CONFIG_KEYS = {
   cloudFrontKeypairId: 'CLOUDFRONT_KEYPAIR_ID',
   cloudFrontPrivateKey: 'ENCRYPTED_CLOUDFRONT_PRIVATE_KEY',
   htpasswd: 'ENCRYPTED_HTPASSWD'
-}
+};
 
 // --------------
 // Main function exported to Lambda
@@ -40,15 +40,17 @@ exports.handler = (event, context, callback) => {
       // validate username and password
       htpasswd.authenticate(body.username, body.password, config.htpasswd).then((authenticated) => {
         if (authenticated) {
-          console.log('Successful login for: ' + body.username)
-          var responseHeaders = cookiesHeaders(config)
+          console.log('Successful login for: ' + body.username);
+          const responseHeaders = cookiesHeaders(config);
           callback(null, {
             statusCode: 200,
             body: JSON.stringify(responseHeaders),
             headers: responseHeaders
           })
         } else {
-          console.log('Invalid login for: ' + body.username)
+          console.log('Invalid login for: ' + body.username);
+          console.log(body.password);
+          console.log(config.htpasswd);
           callback(null, {
             statusCode: 403,
             body: 'Authentication failed',
@@ -63,7 +65,7 @@ exports.handler = (event, context, callback) => {
       })
     }
   })
-}
+};
 
 // --------------
 // Parse the body from JSON
@@ -109,7 +111,7 @@ function cookiesHeaders (config) {
     expireTime: new Date().getTime() + (sessionDuration * 1000),
     keypairId: config.cloudFrontKeypairId,
     privateKeyString: config.cloudFrontPrivateKey
-  })
+  });
   // extra options for all cookies we write
   // var date = new Date()
   // date.setTime(date + (config.cookieExpiryInSeconds * 1000))
